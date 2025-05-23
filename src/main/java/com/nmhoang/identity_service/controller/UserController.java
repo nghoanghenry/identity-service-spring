@@ -2,6 +2,7 @@ package com.nmhoang.identity_service.controller;
 
 import com.nmhoang.identity_service.dto.request.UserCreationRequest;
 import com.nmhoang.identity_service.dto.request.UserUpdateRequest;
+import com.nmhoang.identity_service.dto.response.ApiResponse;
 import com.nmhoang.identity_service.entity.User;
 import com.nmhoang.identity_service.service.UserService;
 import jakarta.validation.Valid;
@@ -21,8 +22,10 @@ public class UserController {
     }
 
     @PostMapping
-    User postUser(@RequestBody @Valid UserCreationRequest userCreationRequest){
-        return userService.createUser(userCreationRequest);
+    ApiResponse<User> postUser(@RequestBody @Valid UserCreationRequest userCreationRequest){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.createUser(userCreationRequest));
+        return apiResponse;
     }
 
     @GetMapping

@@ -3,6 +3,8 @@ package com.nmhoang.identity_service.service;
 import com.nmhoang.identity_service.dto.request.UserCreationRequest;
 import com.nmhoang.identity_service.dto.request.UserUpdateRequest;
 import com.nmhoang.identity_service.entity.User;
+import com.nmhoang.identity_service.exception.AppException;
+import com.nmhoang.identity_service.exception.ErrorCode;
 import com.nmhoang.identity_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class UserService {
         User user = new User();
 
         if(userRepository.existsByUsername(userCreationRequest.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
         user.setUsername(userCreationRequest.getUsername());
         user.setPassword(userCreationRequest.getPassword());
@@ -39,7 +41,7 @@ public class UserService {
 
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("User with id " + id + " not found")
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
         );
     }
 
