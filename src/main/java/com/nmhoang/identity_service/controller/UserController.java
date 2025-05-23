@@ -4,6 +4,7 @@ import com.nmhoang.identity_service.dto.request.UserCreationRequest;
 import com.nmhoang.identity_service.dto.request.UserUpdateRequest;
 import com.nmhoang.identity_service.entity.User;
 import com.nmhoang.identity_service.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    User postUser(@RequestBody UserCreationRequest userCreationRequest){
+    User postUser(@RequestBody @Valid UserCreationRequest userCreationRequest){
         return userService.createUser(userCreationRequest);
     }
 
