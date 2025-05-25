@@ -1,4 +1,4 @@
-package com.nmhoang.identity_service.dto.response;
+package com.nmhoang.identity_service.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    boolean authenticated;
+public class IntrospectRequest {
     String token;
 }
