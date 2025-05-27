@@ -4,6 +4,7 @@ import com.nmhoang.identity_service.dto.request.UserCreationRequest;
 import com.nmhoang.identity_service.dto.request.UserUpdateRequest;
 import com.nmhoang.identity_service.dto.response.UserResponse;
 import com.nmhoang.identity_service.entity.User;
+import com.nmhoang.identity_service.enums.Role;
 import com.nmhoang.identity_service.exception.AppException;
 import com.nmhoang.identity_service.exception.ErrorCode;
 import com.nmhoang.identity_service.mapper.UserMapper;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -25,16 +27,21 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
-    public User createUser(UserCreationRequest userCreationRequest) {
+    public UserResponse createUser(UserCreationRequest userCreationRequest) {
         if(userRepository.existsByUsername(userCreationRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         User user = userMapper.toUser(userCreationRequest);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public List<User> getAllUsers() {
