@@ -33,12 +33,12 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse<List<User>> getAllUser(){
+    ApiResponse<List<UserResponse>> getAllUser(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Username: {}", authentication.getName());
         log.info("Roles: {}", authentication.getAuthorities());
 
-        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
+        ApiResponse<List<UserResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setData(userService.getAllUsers());
         return apiResponse;
     }
@@ -62,6 +62,13 @@ public class UserController {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         userService.deleteUser(userId);
         apiResponse.setData("User deleted.");
+        return apiResponse;
+    }
+
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> getMyInfo(){
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.getMyInfo());
         return apiResponse;
     }
 }
