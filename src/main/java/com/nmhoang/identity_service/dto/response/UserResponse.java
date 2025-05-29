@@ -1,5 +1,6 @@
 package com.nmhoang.identity_service.dto.response;
 
+import com.nmhoang.identity_service.entity.Role;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,5 +19,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<String> roles;
+    Set<Role> roles;
 }
