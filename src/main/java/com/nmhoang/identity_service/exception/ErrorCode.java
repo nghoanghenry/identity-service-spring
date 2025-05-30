@@ -14,6 +14,7 @@ public enum ErrorCode {
     INTERNAL_ERROR(1006, "Internal error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATION(1007, "Unauthorized", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "Unauthorized client", HttpStatus.UNAUTHORIZED),
+    DOB_INVALID(1009, "Invalid dob", HttpStatus.BAD_REQUEST),
     ;
     private int code;
     private String message;

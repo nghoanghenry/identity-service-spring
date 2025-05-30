@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -71,8 +73,11 @@ public class UserService {
         userMapper.updateUser(user, userUpdateRequest);
 
         user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
-        var roles = roleRepository.findAllById(userUpdateRequest.getRoles());
-        user.setRoles(new HashSet<>(roles));
+        List<String> roleIds = userUpdateRequest.getRoles();
+        if (!(roleIds == null || roleIds.isEmpty())) {
+            var roles = roleRepository.findAllById(roleIds);
+            user.setRoles(new HashSet<>(roles));
+        }
 
         return userMapper.toUserResponse(userRepository.save(user));
 
