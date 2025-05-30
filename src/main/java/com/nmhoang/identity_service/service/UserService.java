@@ -8,6 +8,7 @@ import com.nmhoang.identity_service.enums.Role;
 import com.nmhoang.identity_service.exception.AppException;
 import com.nmhoang.identity_service.exception.ErrorCode;
 import com.nmhoang.identity_service.mapper.UserMapper;
+import com.nmhoang.identity_service.repository.RoleRepository;
 import com.nmhoang.identity_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         if(userRepository.existsByUsername(userCreationRequest.getUsername())) {
@@ -48,7 +50,8 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('READ_DATA')")
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserResponse).toList();
@@ -66,6 +69,10 @@ public class UserService {
                 () -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, userUpdateRequest);
+
+        user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
+        var roles = roleRepository.findAllById(userUpdateRequest.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
 
