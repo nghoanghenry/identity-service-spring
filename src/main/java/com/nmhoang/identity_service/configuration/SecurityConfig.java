@@ -1,6 +1,7 @@
 package com.nmhoang.identity_service.configuration;
 
 import com.nmhoang.identity_service.enums.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,15 @@ public class SecurityConfig {
             "/user",
             "/auth/token",
             "/auth/introspect",
+            "/auth/logout",
     };
 
     private final String[] ADMIN_URLS = {
             "/user"
     };
+
+    @Autowired
+    CustomJwtDecoder jwtDecoder;
 
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
@@ -44,21 +49,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
         );
         httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JWTAuthenticationEntryPoint())
         );
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
-
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-    }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {

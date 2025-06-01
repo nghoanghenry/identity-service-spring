@@ -3,9 +3,11 @@ package com.nmhoang.identity_service.controller;
 import com.nimbusds.jose.JOSEException;
 import com.nmhoang.identity_service.dto.request.AuthenticationRequest;
 import com.nmhoang.identity_service.dto.request.IntrospectRequest;
+import com.nmhoang.identity_service.dto.request.LogoutRequest;
 import com.nmhoang.identity_service.dto.response.ApiResponse;
 import com.nmhoang.identity_service.dto.response.AuthenticationResponse;
 import com.nmhoang.identity_service.dto.response.IntrospectResponse;
+import com.nmhoang.identity_service.dto.response.UserResponse;
 import com.nmhoang.identity_service.service.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +42,10 @@ public class AuthenticationController {
                 .build();
     }
 
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest logoutRequest) throws ParseException, JOSEException {
+        authenticationService.logout(logoutRequest);
+        return ApiResponse.<Void>builder()
+                .build();
+    }
 }
