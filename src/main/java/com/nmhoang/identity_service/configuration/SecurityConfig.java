@@ -30,6 +30,7 @@ public class SecurityConfig {
             "/auth/token",
             "/auth/introspect",
             "/auth/logout",
+            "/auth/refresh",
     };
 
     private final String[] ADMIN_URLS = {

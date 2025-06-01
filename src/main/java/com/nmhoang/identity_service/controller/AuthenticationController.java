@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nmhoang.identity_service.dto.request.AuthenticationRequest;
 import com.nmhoang.identity_service.dto.request.IntrospectRequest;
 import com.nmhoang.identity_service.dto.request.LogoutRequest;
+import com.nmhoang.identity_service.dto.request.RefreshRequest;
 import com.nmhoang.identity_service.dto.response.ApiResponse;
 import com.nmhoang.identity_service.dto.response.AuthenticationResponse;
 import com.nmhoang.identity_service.dto.response.IntrospectResponse;
@@ -46,6 +47,14 @@ public class AuthenticationController {
     ApiResponse<Void> logout(@RequestBody LogoutRequest logoutRequest) throws ParseException, JOSEException {
         authenticationService.logout(logoutRequest);
         return ApiResponse.<Void>builder()
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest refreshRequest) throws ParseException, JOSEException {
+        var refreshToken = authenticationService.refeshToken(refreshRequest);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(refreshToken)
                 .build();
     }
 }
